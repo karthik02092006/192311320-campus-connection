@@ -1,0 +1,18 @@
+import java.util.*;
+public class CustomSequence {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter start value: ");
+        int start = sc.nextInt();
+        System.out.print("Enter increment: ");
+        int inc = sc.nextInt();
+        System.out.print("Enter number of terms: ");
+        int n = sc.nextInt();
+        System.out.println("Generated Sequence:");
+        int current = start;
+        for (int i = 0; i < n; i++) {
+            System.out.print(current + " ");
+            current += inc;
+        }
+    }
+}
