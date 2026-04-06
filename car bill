@@ -1,0 +1,27 @@
+import java.util.Scanner;
+
+public class bill {
+   public bill() {
+   }
+
+   public static void main(String[] var0) {
+      Scanner var1 = new Scanner(System.in);
+      System.out.print("Enter car model: ");
+      String var2 = var1.nextLine();
+      System.out.print("Enter base price of car: ");
+      double var3 = var1.nextDouble();
+      System.out.print("Enter accessories cost: ");
+      double var5 = var1.nextDouble();
+      BillCalculator var7 = (var0x, var2x) -> var0x + var2x;
+      double var8 = var7.calculate(var3, var5);
+      double var10 = var8 * 0.05;
+      double var12 = var8 + var10;
+      System.out.println("\n----- CAR BILL -----");
+      System.out.println("Car Model: " + var2);
+      System.out.println("Base Price: " + var3);
+      System.out.println("Accessories Cost: " + var5);
+      System.out.println("Subtotal: " + var8);
+      System.out.println("GST (5%): " + var10);
+      System.out.println("Total Amount: " + var12);
+   }
+}
