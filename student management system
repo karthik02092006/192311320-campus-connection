@@ -1,0 +1,129 @@
+import java.util.Scanner;
+class Student {
+    int rollNo;
+    String name;
+    int age;
+    Student next;A
+    Student(int rollNo, String name, int age) {
+        this.rollNo = rollNo;
+        this.name = name;
+        this.age = age;
+        this.next = null;
+    }
+}
+class StudentManagementSystem {
+    Student head = null;
+    public void addStudent(int rollNo, String name, int age) {
+        Student newStudent = new Student(rollNo, name, age);
+        if (head == null) {
+            head = newStudent;
+        } else {
+            Student temp = head;
+            while (temp.next != null) {
+                temp = temp.next;
+            }
+            temp.next = newStudent;
+        }
+        System.out.println("Student added successfully!");
+    }
+    public void displayStudents() {
+        if (head == null) {
+            System.out.println("No student records found.");
+            return;
+        }
+        Student temp = head;
+        while (temp != null) {
+            System.out.println("Roll No: " + temp.rollNo +
+                               ", Name: " + temp.name +
+                               ", Age: " + temp.age);
+            temp = temp.next;
+        }
+    }
+    public void searchStudent(int rollNo) {
+        Student temp = head;
+        while (temp != null) {
+            if (temp.rollNo == rollNo) {
+                System.out.println("Student Found!");
+                System.out.println("Roll No: " + temp.rollNo +
+                                   ", Name: " + temp.name +
+                                   ", Age: " + temp.age);
+                return;
+            }
+            temp = temp.next;
+        }
+
+        System.out.println("Student not found.");
+    }
+    public void deleteStudent(int rollNo) {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+        if (head.rollNo == rollNo) {
+            head = head.next;
+            System.out.println("Student deleted successfully!");
+            return;
+        }
+        Student temp = head;
+        Student prev = null;
+        while (temp != null && temp.rollNo != rollNo) {
+            prev = temp;
+            temp = temp.next;
+        }
+        if (temp == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+        prev.next = temp.next;
+        System.out.println("Student deleted successfully!");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        StudentManagementSystem sms = new StudentManagementSystem();
+        int choice;
+        do {
+            System.out.println("\n--- Student Management System ---");
+            System.out.println("1. Add Student");
+            System.out.println("2. Display Students");
+            System.out.println("3. Search Student");
+            System.out.println("4. Delete Student");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Roll No: ");
+                    int roll = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Enter Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Enter Age: ");
+                    int age = sc.nextInt();
+                    sms.addStudent(roll, name, age);
+                    break;
+                case 2:
+                    sms.displayStudents();
+                    break;
+                case 3:
+                    System.out.print("Enter Roll No to search: ");
+                    int searchRoll = sc.nextInt();
+                    sms.searchStudent(searchRoll);
+                    break;
+                case 4:
+                    System.out.print("Enter Roll No to delete: ");
+                    int deleteRoll = sc.nextInt();
+                    sms.deleteStudent(deleteRoll);
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        } while (choice != 5);
+        sc.close();
+    }
+}
