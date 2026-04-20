@@ -1,0 +1,117 @@
+import java.util.*;
+
+class Consumer {
+    int id;
+    String name;
+    int units;
+    double bill;
+
+    Consumer(int id, String name, int units) {
+        this.id = id;
+        this.name = name;
+        this.units = units;
+        this.bill = calculateBill(units);
+    }
+
+    static double calculateBill(int units) {
+        double amount = 0;
+
+        if (units <= 100)
+            amount = units * 1.5;
+        else if (units <= 200)
+            amount = (100 * 1.5) + (units - 100) * 2.5;
+        else
+            amount = (100 * 1.5) + (100 * 2.5) + (units - 200) * 4;
+
+        return amount;
+    }
+}
+
+public class ElectricitySystem {
+
+    static ArrayList<Consumer> consumers = new ArrayList<>();
+    static ArrayList<String> history = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+
+        do {
+            System.out.println("\n====== ELECTRICITY SYSTEM ======");
+            System.out.println("1. Add Consumer");
+            System.out.println("2. Generate Bill");
+            System.out.println("3. View All");
+            System.out.println("4. High Usage Alert");
+            System.out.println("5. Search Consumer");
+            System.out.println("6. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1: addConsumer(); break;
+                case 2: generateBill(); break;
+                case 3: viewAll(); break;
+                case 4: highUsageAlert(); break;
+                case 5: searchConsumer(); break;
+                case 6: System.out.println("Thank you ⚡"); break;
+                default: System.out.println("Invalid choice!");
+            }
+
+        } while (choice != 6);
+    }
+
+    static void addConsumer() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter Units Consumed: ");
+        int units = sc.nextInt();
+
+        Consumer c = new Consumer(id, name, units);
+        consumers.add(c);
+
+        history.add("Bill generated for " + name + " | Units: " + units);
+
+        System.out.println("Consumer added & bill generated ✅");
+    }
+
+    static void generateBill() {
+        for (Consumer c : consumers) {
+            System.out.println("\n--- BILL ---");
+            System.out.println("ID: " + c.id);
+            System.out.println("Name: " + c.name);
+            System.out.println("Units: " + c.units);
+            System.out.println("Amount: ₹" + c.bill);
+        }
+    }
+
+    static void viewAll() {
+        for (Consumer c : consumers) {
+            System.out.println(c.id + " | " + c.name + " | Units: " + c.units);
+        }
+    }
+
+    static void highUsageAlert() {
+        for (Consumer c : consumers) {
+            if (c.units > 200) {
+                System.out.println("⚠️ High usage: " + c.name + " (" + c.units + " units)");
+            }
+        }
+    }
+
+    static void searchConsumer() {
+        System.out.print("Enter name: ");
+        String name = sc.nextLine().toLowerCase();
+
+        for (Consumer c : consumers) {
+            if (c.name.toLowerCase().contains(name)) {
+                System.out.println(c.id + " | " + c.name + " | ₹" + c.bill);
+            }
+        }
+    }
+}

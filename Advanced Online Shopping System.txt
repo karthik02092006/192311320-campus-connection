@@ -1,0 +1,176 @@
+import java.util.*;
+
+class Product {
+    int id;
+    String name;
+    String category;
+    int price;
+    int stock;
+
+    Product(int id, String name, String category, int price, int stock) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.price = price;
+        this.stock = stock;
+    }
+}
+
+class CartItem {
+    Product product;
+    int quantity;
+
+    CartItem(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+}
+
+class Order {
+    String orderId;
+    List<CartItem> items;
+    int total;
+
+    Order(String orderId, List<CartItem> items, int total) {
+        this.orderId = orderId;
+        this.items = items;
+        this.total = total;
+    }
+}
+
+public class OnlineShoppingSystem {
+
+    static List<Product> products = new ArrayList<>();
+    static List<CartItem> cart = new ArrayList<>();
+    static List<Order> orders = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    static String username = "user";
+    static String password = "1234";
+
+    public static void main(String[] args) {
+
+        initializeProducts();
+
+        if (!login()) return;
+
+        int choice;
+        do {
+            System.out.println("\n====== ONLINE SHOPPING SYSTEM ======");
+            System.out.println("1. View Products");
+            System.out.println("2. Add to Cart");
+            System.out.println("3. View Cart");
+            System.out.println("4. Checkout");
+            System.out.println("5. Order History");
+            System.out.println("6. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1: viewProducts(); break;
+                case 2: addToCart(); break;
+                case 3: viewCart(); break;
+                case 4: checkout(); break;
+                case 5: viewOrders(); break;
+                case 6: System.out.println("Thank you 🛒"); break;
+                default: System.out.println("Invalid choice!");
+            }
+
+        } while (choice != 6);
+    }
+
+    static void initializeProducts() {
+        products.add(new Product(1, "Laptop", "Electronics", 50000, 5));
+        products.add(new Product(2, "Phone", "Electronics", 20000, 10));
+        products.add(new Product(3, "Shoes", "Fashion", 2000, 20));
+        products.add(new Product(4, "Watch", "Accessories", 1500, 15));
+    }
+
+    static boolean login() {
+        System.out.print("Enter Username: ");
+        String u = sc.nextLine();
+        System.out.print("Enter Password: ");
+        String p = sc.nextLine();
+
+        if (u.equals(username) && p.equals(password)) {
+            System.out.println("Login successful ✅");
+            return true;
+        } else {
+            System.out.println("Invalid login ❌");
+            return false;
+        }
+    }
+
+    static void viewProducts() {
+        for (Product p : products) {
+            System.out.println(p.id + " | " + p.name + " | " + p.category +
+                    " | ₹" + p.price + " | Stock: " + p.stock);
+        }
+    }
+
+    static void addToCart() {
+        System.out.print("Enter Product ID: ");
+        int id = sc.nextInt();
+        System.out.print("Enter Quantity: ");
+        int qty = sc.nextInt();
+
+        for (Product p : products) {
+            if (p.id == id) {
+                if (qty > p.stock) {
+                    System.out.println("Not enough stock ❌");
+                    return;
+                }
+                cart.add(new CartItem(p, qty));
+                System.out.println("Added to cart 🛒");
+                return;
+            }
+        }
+        System.out.println("Product not found!");
+    }
+
+    static void viewCart() {
+        int total = 0;
+        System.out.println("\n--- CART ---");
+        for (CartItem c : cart) {
+            int cost = c.product.price * c.quantity;
+            total += cost;
+            System.out.println(c.product.name + " x " + c.quantity + " = ₹" + cost);
+        }
+        System.out.println("Total: ₹" + total);
+    }
+
+    static void checkout() {
+        int total = 0;
+
+        for (CartItem c : cart) {
+            total += c.product.price * c.quantity;
+        }
+
+        int discount = (total > 50000) ? 5000 : 0;
+        int finalAmount = total - discount;
+
+        // Reduce stock
+        for (CartItem c : cart) {
+            c.product.stock -= c.quantity;
+        }
+
+        String orderId = "ORD" + new Random().nextInt(10000);
+        orders.add(new Order(orderId, new ArrayList<>(cart), finalAmount));
+
+        System.out.println("\n📦 Order Placed!");
+        System.out.println("Order ID: " + orderId);
+        System.out.println("Total: ₹" + total);
+        System.out.println("Discount: ₹" + discount);
+        System.out.println("Final Amount: ₹" + finalAmount);
+
+        cart.clear();
+    }
+
+    static void viewOrders() {
+        System.out.println("\n--- ORDER HISTORY ---");
+        for (Order o : orders) {
+            System.out.println("Order ID: " + o.orderId + " | Amount: ₹" + o.total);
+        }
+    }
+}

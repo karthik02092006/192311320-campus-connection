@@ -1,0 +1,95 @@
+import java.util.*;
+
+class Room {
+    int roomNumber;
+    boolean isBooked;
+    String customerName;
+
+    Room(int roomNumber) {
+        this.roomNumber = roomNumber;
+        this.isBooked = false;
+        this.customerName = "";
+    }
+}
+
+public class HotelManagement {
+    static Scanner sc = new Scanner(System.in);
+    static ArrayList<Room> rooms = new ArrayList<>();
+
+    static void addRooms(int n) {
+        for (int i = 1; i <= n; i++) {
+            rooms.add(new Room(i));
+        }
+    }
+
+    static void displayRooms() {
+        for (Room r : rooms) {
+            System.out.println("Room " + r.roomNumber + " - " + (r.isBooked ? "Booked by " + r.customerName : "Available"));
+        }
+    }
+
+    static void bookRoom() {
+        System.out.print("Enter room number: ");
+        int num = sc.nextInt();
+        sc.nextLine();
+        for (Room r : rooms) {
+            if (r.roomNumber == num) {
+                if (!r.isBooked) {
+                    System.out.print("Enter customer name: ");
+                    r.customerName = sc.nextLine();
+                    r.isBooked = true;
+                    System.out.println("Room booked");
+                } else {
+                    System.out.println("Already booked");
+                }
+                return;
+            }
+        }
+        System.out.println("Room not found");
+    }
+
+    static void checkout() {
+        System.out.print("Enter room number: ");
+        int num = sc.nextInt();
+        for (Room r : rooms) {
+            if (r.roomNumber == num) {
+                if (r.isBooked) {
+                    r.isBooked = false;
+                    r.customerName = "";
+                    System.out.println("Checkout done");
+                } else {
+                    System.out.println("Room already empty");
+                }
+                return;
+            }
+        }
+        System.out.println("Room not found");
+    }
+
+    public static void main(String[] args) {
+        System.out.print("Enter number of rooms: ");
+        int n = sc.nextInt();
+        addRooms(n);
+
+        while (true) {
+            System.out.println("\n1.Display\n2.Book\n3.Checkout\n4.Exit");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    displayRooms();
+                    break;
+                case 2:
+                    bookRoom();
+                    break;
+                case 3:
+                    checkout();
+                    break;
+                case 4:
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice");
+            }
+        }
+    }
+}

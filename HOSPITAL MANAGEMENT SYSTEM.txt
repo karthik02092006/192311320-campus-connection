@@ -1,0 +1,124 @@
+import java.util.*;
+
+class Patient {
+    int id;
+    String name;
+    int age;
+    String disease;
+    String doctor;
+    double bill;
+    boolean isAdmitted;
+
+    Patient(int id, String name, int age, String disease) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.disease = disease;
+        this.doctor = assignDoctor(disease);
+        this.bill = calculateBill(disease);
+        this.isAdmitted = true;
+    }
+
+    static String assignDoctor(String disease) {
+        if (disease.equalsIgnoreCase("fever"))
+            return "General Doctor";
+        else
+            return "Specialist";
+    }
+
+    static double calculateBill(String disease) {
+        if (disease.equalsIgnoreCase("fever"))
+            return 500;
+        else if (disease.equalsIgnoreCase("surgery"))
+            return 5000;
+        else
+            return 1000;
+    }
+}
+
+public class HospitalSystem {
+    static ArrayList<Patient> patients = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+
+        do {
+            System.out.println("\n====== HOSPITAL MANAGEMENT SYSTEM ======");
+            System.out.println("1. Add Patient");
+            System.out.println("2. View Patients");
+            System.out.println("3. Discharge Patient");
+            System.out.println("4. Search Patient");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1: addPatient(); break;
+                case 2: viewPatients(); break;
+                case 3: dischargePatient(); break;
+                case 4: searchPatient(); break;
+                case 5: System.out.println("Thank you 🏥"); break;
+                default: System.out.println("Invalid choice!");
+            }
+
+        } while (choice != 5);
+    }
+
+    static void addPatient() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter Age: ");
+        int age = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter Disease: ");
+        String disease = sc.nextLine();
+
+        Patient p = new Patient(id, name, age, disease);
+        patients.add(p);
+
+        System.out.println("Patient added & admitted ✅");
+    }
+
+    static void viewPatients() {
+        for (Patient p : patients) {
+            if (p.isAdmitted) {
+                System.out.println(p.id + " | " + p.name + " | " + p.disease +
+                        " | Doctor: " + p.doctor + " | Bill: ₹" + p.bill);
+            }
+        }
+    }
+
+    static void dischargePatient() {
+        System.out.print("Enter Patient ID: ");
+        int id = sc.nextInt();
+
+        for (Patient p : patients) {
+            if (p.id == id && p.isAdmitted) {
+                System.out.println("Final Bill: ₹" + p.bill);
+                p.isAdmitted = false;
+                System.out.println("Patient discharged 🏥");
+                return;
+            }
+        }
+        System.out.println("Patient not found!");
+    }
+
+    static void searchPatient() {
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine().toLowerCase();
+
+        for (Patient p : patients) {
+            if (p.name.toLowerCase().contains(name)) {
+                System.out.println(p.id + " | " + p.name + " | " + p.disease);
+            }
+        }
+    }
+}

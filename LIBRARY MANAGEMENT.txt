@@ -1,0 +1,146 @@
+import java.util.*;
+import java.text.SimpleDateFormat;
+
+class Book {
+    int id;
+    String name;
+    String category;
+    boolean isIssued;
+    String issuedTo;
+    Date issueDate;
+
+    Book(int id, String name, String category) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.isIssued = false;
+        this.issuedTo = "";
+        this.issueDate = null;
+    }
+}
+
+public class LibrarySystem {
+    static ArrayList<Book> books = new ArrayList<>();
+    static ArrayList<String> history = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        initializeBooks();
+
+        int choice;
+        do {
+            System.out.println("\n====== SMART LIBRARY SYSTEM ======");
+            System.out.println("1. View Books");
+            System.out.println("2. Issue Book");
+            System.out.println("3. Return Book");
+            System.out.println("4. Search Book");
+            System.out.println("5. View Issued Books");
+            System.out.println("6. Transaction History");
+            System.out.println("7. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1: viewBooks(); break;
+                case 2: issueBook(); break;
+                case 3: returnBook(); break;
+                case 4: searchBook(); break;
+                case 5: viewIssuedBooks(); break;
+                case 6: showHistory(); break;
+                case 7: System.out.println("Thank you 📚"); break;
+                default: System.out.println("Invalid choice!");
+            }
+
+        } while (choice != 7);
+    }
+
+    static void initializeBooks() {
+        books.add(new Book(1, "Java Programming", "Tech"));
+        books.add(new Book(2, "Data Structures", "Tech"));
+        books.add(new Book(3, "Harry Potter", "Novel"));
+        books.add(new Book(4, "Physics Basics", "Science"));
+        books.add(new Book(5, "AI Fundamentals", "Tech"));
+    }
+
+    static void viewBooks() {
+        for (Book b : books) {
+            System.out.println(b.id + " | " + b.name + " | " + b.category +
+                    " | " + (b.isIssued ? "Issued" : "Available"));
+        }
+    }
+
+    static void issueBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        for (Book b : books) {
+            if (b.id == id && !b.isIssued) {
+                System.out.print("Enter Student Name: ");
+                b.issuedTo = sc.nextLine();
+                b.isIssued = true;
+                b.issueDate = new Date();
+
+                history.add("Issued: " + b.name + " to " + b.issuedTo);
+                System.out.println("Book issued successfully 📘");
+                return;
+            }
+        }
+        System.out.println("Book not available!");
+    }
+
+    static void returnBook() {
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+
+        for (Book b : books) {
+            if (b.id == id && b.isIssued) {
+                long diff = new Date().getTime() - b.issueDate.getTime();
+                long days = diff / (1000 * 60 * 60 * 24);
+
+                long fine = 0;
+                if (days > 7) {
+                    fine = (days - 7) * 10;
+                }
+
+                System.out.println("Returned after " + days + " days");
+                System.out.println("Fine: ₹" + fine);
+
+                history.add("Returned: " + b.name + " | Fine ₹" + fine);
+
+                b.isIssued = false;
+                b.issuedTo = "";
+                b.issueDate = null;
+                return;
+            }
+        }
+        System.out.println("Invalid Book ID!");
+    }
+
+    static void searchBook() {
+        System.out.print("Enter book name: ");
+        String name = sc.nextLine().toLowerCase();
+
+        for (Book b : books) {
+            if (b.name.toLowerCase().contains(name)) {
+                System.out.println(b.id + " | " + b.name + " | " + b.category);
+            }
+        }
+    }
+
+    static void viewIssuedBooks() {
+        for (Book b : books) {
+            if (b.isIssued) {
+                System.out.println(b.name + " issued to " + b.issuedTo);
+            }
+        }
+    }
+
+    static void showHistory() {
+        System.out.println("\n--- TRANSACTION HISTORY ---");
+        for (String h : history) {
+            System.out.println(h);
+        }
+    }
+}
